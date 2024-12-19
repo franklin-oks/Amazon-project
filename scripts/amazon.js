@@ -1,7 +1,6 @@
 
-
 let productsHTML = " ";
-products.forEach(({image,name,rating:{stars,count},priceCents}) =>{
+products.forEach(({id,image,name,rating:{stars,count},priceCents}) =>{
     productsHTML += `
             <div class="product-container">
                 <div class="product-image-container">
@@ -47,14 +46,48 @@ products.forEach(({image,name,rating:{stars,count},priceCents}) =>{
                     Added
                 </div>
 
-                <button class="add-to-cart-button button-primary">
+                <button class="add-to-cart-button button-primary js-add-to-cart"
+                data-product-id="${id}">
                     Add to Cart
                 </button>
                 </div>
             `; 
 });
 
-console.log(productsHTML);
+// console.log(productsHTML);
 
 const productsContainer = document.querySelector('.js-products-grid');
 productsContainer.innerHTML = productsHTML;
+
+// to addeventlistener to the button
+
+const buttonsEl = document.querySelectorAll('.js-add-to-cart');
+// console.log(buttonsEl);
+buttonsEl.forEach((button) =>{
+  button.addEventListener('click',() =>{
+    const productId = button.dataset.productId;
+
+
+// to check if a product already exists in a cart by looping through the cart and ckeck
+// matching item
+let matchingItem;
+
+cart.forEach((item) =>{
+  if(productId === item.productId){
+    matchingItem = item;
+  }
+});
+
+if(matchingItem){
+  matchingItem.quantity += 1;
+
+}else{
+  cart.push({
+    productId: productId,
+    quantity: 1
+  });
+
+}
+    console.log(cart);   
+  });
+});
