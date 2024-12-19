@@ -1,4 +1,5 @@
-  import { cart } from "../data/cart";
+  import { cart } from "../data/cart.js";
+  import { products } from "../data/products.js";
   // import { cart as myCart } from "../data/cart";
   // to avoid naming conflict we do as above, cart is now myCart
 
