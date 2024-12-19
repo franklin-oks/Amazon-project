@@ -1,4 +1,4 @@
-  import { cart } from "../data/cart.js";
+  import { cart, addToCart } from "../data/cart.js";
   import { products } from "../data/products.js";
   // import { cart as myCart } from "../data/cart";
   // to avoid naming conflict we do as above, cart is now myCart
@@ -64,44 +64,24 @@ products.forEach(({id,image,name,rating:{stars,count},priceCents}) =>{
 const productsContainer = document.querySelector('.js-products-grid');
 productsContainer.innerHTML = productsHTML;
 
-// to addeventlistener to the button
 
+function updateCartQuantity(){
+    // to make the cart icon count the total items
+    let cartQuantity = 0;
+    cart.forEach((cartItem) =>{
+    cartQuantity += cartItem.quantity
+    });
+    // add the quantity to the cart icon
+    const cartBtn = document.querySelector('.js-cart-quantity');
+    cartBtn.innerHTML = cartQuantity;
+}
+// to addeventlistener to the button
 const buttonsEl = document.querySelectorAll('.js-add-to-cart');
-// console.log(buttonsEl);
 buttonsEl.forEach((button) =>{
   button.addEventListener('click',() =>{
-    const productId = button.dataset.productId;
-
-
-// to check if a product already exists in a cart by looping through the cart and ckeck
-// matching item
-let matchingItem;
-
-cart.forEach((item) =>{
-  if(productId === item.productId){
-    matchingItem = item;
-  }
-});
-
-if(matchingItem){
-  matchingItem.quantity += 1;
-
-}else{
-  cart.push({
-    productId: productId,
-    quantity: 1
-  });
-}
-
-// to make the cart icon count the total items
-let cartQuantity = 0;
-cart.forEach((item) =>{
-  cartQuantity += item.quantity
-})
-
-// add the quantity to the cart icon
-const cartBtn = document.querySelector('.js-cart-quantity');
-cartBtn.innerHTML = cartQuantity;
+  const productId = button.dataset.productId;
+  addToCart(productId);
+  updateCartQuantity();
   
   });
 });
