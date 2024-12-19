@@ -1,5 +1,6 @@
   import { cart, addToCart } from "../data/cart.js";
   import { products } from "../data/products.js";
+  import {formatCurrency} from "./utils/money.js";
   // import { cart as myCart } from "../data/cart";
   // to avoid naming conflict we do as above, cart is now myCart
 
@@ -26,7 +27,7 @@ products.forEach(({id,image,name,rating:{stars,count},priceCents}) =>{
                 </div>
 
                 <div class="product-price">
-                    $${(priceCents / 100).toFixed(2)}
+                    $${formatCurrency(priceCents)}
                 </div>
 
                 <div class="product-quantity-container">
