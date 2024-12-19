@@ -1,4 +1,4 @@
-import {cart} from "../data/cart.js";
+import {cart, removeFromCart} from "../data/cart.js";
 // we need to import the products here such that our productId can search and get other details like name etc
 import {products} from "../data/products.js";
 import {formatCurrency} from "./utils/money.js";
@@ -43,7 +43,7 @@ cartSummaryHTML +=`<div class="cart-item-container">
             <span class="update-quantity-link link-primary">
             Update
             </span>
-            <span class="delete-quantity-link link-primary">
+            <span class="delete-quantity-link link-primary js-delete-link" data-product-id="${matchingProduct.id}">
             Delete
             </span>
         </div>
@@ -103,4 +103,15 @@ cartSummaryHTML +=`<div class="cart-item-container">
 const mainCart = document.querySelector('.js-order-summary');
 mainCart.innerHTML = cartSummaryHTML;
 
-
+// deleting from a cart by selecting all the delete buttons
+// we save a particular id to the delete button using data set
+const deleteButtons = document.querySelectorAll('.js-delete-link');
+deleteButtons.forEach((button) =>{
+    button.addEventListener("click",() =>{
+      const productId = button.dataset.productId;
+    //   console.log(productId);
+      removeFromCart(productId);  
+      console.log(cart);
+         
+    });
+});

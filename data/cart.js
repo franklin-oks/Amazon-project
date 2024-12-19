@@ -1,4 +1,4 @@
-export const cart = [
+export let cart = [
   {
     // create a default item for the check out.NB: the image is not been saves
     // bcos from the productId we can get the name,price and etc
@@ -32,4 +32,21 @@ export function addToCart(productId){
         quantity: 1
       });
     }
+}
+
+// to remove item from cart, we can 1)create a new array, 2)loop through the array and 
+// 3)outputs all except the deleted one
+ export function removeFromCart(productId){
+  const newCart = [];
+
+  cart.forEach((cartItem) =>{
+    if (cartItem.productId !== productId){
+
+      newCart.push(cartItem);
+    }
+  });
+  // update the already to the newCart with removed item( NB: change const cart above to let cart)
+  cart = newCart;
+
+
 }
