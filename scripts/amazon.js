@@ -86,8 +86,17 @@ if(matchingItem){
     productId: productId,
     quantity: 1
   });
-
 }
-    console.log(cart);   
+
+// to make the cart icon count the total items
+let cartQuantity = 0;
+cart.forEach((item) =>{
+  cartQuantity += item.quantity
+})
+
+// add the quantity to the cart icon
+const cartBtn = document.querySelector('.js-cart-quantity');
+cartBtn.innerHTML = cartQuantity;
+  
   });
 });
