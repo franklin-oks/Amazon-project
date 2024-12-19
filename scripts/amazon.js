@@ -1,3 +1,7 @@
+  import { cart } from "../data/cart";
+  // import { cart as myCart } from "../data/cart";
+  // to avoid naming conflict we do as above, cart is now myCart
+
 
 let productsHTML = " ";
 products.forEach(({id,image,name,rating:{stars,count},priceCents}) =>{
