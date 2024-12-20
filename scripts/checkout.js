@@ -6,7 +6,6 @@ import dayjs from 'https://unpkg.com/dayjs@1.11.10/esm/index.js';
 import {deliveryOptions} from '../data/deliveryoption.js'
 
 
-let cartSummaryHTML = " ";
 // using dayjs external library for date and time calculation
 // first load the dayjs script at the html or best import as module, then come here, call dayjs(); function
 // console.log(dayjs());, dayjs has add method that takes two arguments
@@ -19,154 +18,154 @@ const deliveryDate7Days = today.add(7, 'days');
 // will give you seven days from today, to format the date in a readable way
 console.log(deliveryDate7Days.format('dddd, MMMM D YYYY' ));  //check dayjs documentation for date formating
 
+function renderOrderSummary() {
+
+        let cartSummaryHTML = " ";
 
 
+        cart.forEach((cartItem) =>{
 
-cart.forEach((cartItem) =>{
+            const productId = cartItem.productId;
+            let matchingProduct;        
 
-    const productId = cartItem.productId;
-    let matchingProduct;        
+            // loop through the products in products.js to get the product that corresponds with
+            // our cartItem product, so that we can get the names, images, price etc
+            products.forEach((product) =>{
+                if(product.id === productId){
+                    matchingProduct = product;
+                }
+            });
+            // console.log(matchingProduct);  //to see if all the details of a product is gotten
 
-    // loop through the products in products.js to get the product that corresponds with
-    // our cartItem product, so that we can get the names, images, price etc
-    products.forEach((product) =>{
-        if(product.id === productId){
-            matchingProduct = product;
+
+            const deliveryOptionId = cartItem.deliveryOptionId;
+            let deliveryOption;
+
+            deliveryOptions.forEach((option) =>{
+                if (option.id === deliveryOptionId){
+                    deliveryOption = option;
+                }
+            });
+            const today = dayjs();
+            const deliveryDate = today.add(deliveryOption.deliveryDays, 'days');
+            const dayString = deliveryDate.format('dddd, MMMM D');
+
+        cartSummaryHTML +=`<div class="cart-item-container js-cart-item-container-${matchingProduct.id}">
+            <div class="delivery-date">
+                Delivery date: ${dayString}
+            </div>
+
+            <div class="cart-item-details-grid">
+                <img class="product-image"
+                src="${matchingProduct.image}">
+
+                <div class="cart-item-details">
+                <div class="product-name">
+                    ${matchingProduct.name}
+                </div>
+                <div class="product-price">
+                    $${formatCurrency(matchingProduct.priceCents)}
+                </div>
+                <div class="product-quantity">
+                    <span>
+                    Quantity: <span class="quantity-label">${cartItem.quantity}</span>
+                    </span>
+                    <span class="update-quantity-link link-primary">
+                    Update
+                    </span>
+                    <span class="delete-quantity-link link-primary js-delete-link" data-product-id="${matchingProduct.id}">
+                    Delete
+                    </span>
+                </div>
+                </div>
+
+                <div class="delivery-options">
+                <div class="delivery-options-title">
+                    Choose a delivery option:
+                </div>
+                ${deliveryOptionsHTML(matchingProduct, cartItem)}
+                </div>
+                
+                </div>
+            </div>
+            </div>
+            `;
+        // console.log(cartSummaryHTML);
+            
+        });
+
+        const mainCart = document.querySelector('.js-order-summary');
+        mainCart.innerHTML = cartSummaryHTML;
+
+        // generating html for the delivery options
+        function deliveryOptionsHTML(matchingProduct, cartItem){
+            let html = " ";
+            deliveryOptions.forEach((deliveryOption) =>{
+                const today = dayjs();
+                const deliveryDate = today.add(deliveryOption.deliveryDays, 'days');
+                const dayString = deliveryDate.format('dddd, MMMM D');
+
+                const priceString = deliveryOption.priceCents === 0 ? "Free" : 
+                `$${formatCurrency(deliveryOption.priceCents)} -`;
+
+        // for the check box
+        const isChecked = deliveryOption.id === cartItem.deliveryOptionId;
+
+            html += `
+                <div class="delivery-option js-delivery-option" data-product-id="${matchingProduct.id}"
+                data-delivery-option-id="${deliveryOption.id}">
+                    <input type="radio" ${isChecked ? 'checked': ''}
+                    class="delivery-option-input"
+                    name="delivery-option-${matchingProduct.id}">
+                    <div>
+                    <div class="delivery-option-date">
+                    ${dayString}
+                    </div>
+                    <div class="delivery-option-price">
+                        ${priceString} - Shipping 
+                    </div>
+                    </div>
+                </div>
+                `
+            });
+        return html
         }
-    });
-    // console.log(matchingProduct);  //to see if all the details of a product is gotten
 
 
-    const deliveryOptionId = cartItem.deliveryOptionId;
-    let deliveryOption;
+        // deleting from a cart by selecting all the delete buttons
+        // we save a particular id to the delete button using data set
+        const deleteButtons = document.querySelectorAll('.js-delete-link');
+        deleteButtons.forEach((button) =>{
+            button.addEventListener("click",() =>{
+            const productId = button.dataset.productId;
+            //   console.log(productId);
+            removeFromCart(productId);  
+            //   console.log(cart);
 
-    deliveryOptions.forEach((option) =>{
-        if (option.id === deliveryOptionId){
-            deliveryOption = option;
-        }
-    });
-    const today = dayjs();
-    const deliveryDate = today.add(deliveryOption.deliveryDays, 'days');
-    const dayString = deliveryDate.format('dddd, MMMM D');
+            
+            // to remove the html cart once a delete  button is pressed,
+            // 1) by giving a special class to the product container with its productId
+            // getting the element to be removed. eventListener has remove property
+            const container = document.querySelector(`.js-cart-item-container-${productId}`);
+            console.log((container));
+            container.remove();
+            
+            });
+        });
 
-cartSummaryHTML +=`<div class="cart-item-container js-cart-item-container-${matchingProduct.id}">
-    <div class="delivery-date">
-        Delivery date: ${dayString}
-    </div>
+        // updating delivery option, so that when checked, the delivery date is updated
+        document.querySelectorAll('.js-delivery-option').forEach((element) =>{
+        element.addEventListener('click',()=>{
+            const {productId, deliveryOptionId} = element.dataset
+            updateDeliveryOption(productId, deliveryOptionId);
+          
+            renderOrderSummary();
+        });
+        });
 
-    <div class="cart-item-details-grid">
-        <img class="product-image"
-        src="${matchingProduct.image}">
-
-        <div class="cart-item-details">
-        <div class="product-name">
-            ${matchingProduct.name}
-        </div>
-        <div class="product-price">
-            $${formatCurrency(matchingProduct.priceCents)}
-        </div>
-        <div class="product-quantity">
-            <span>
-            Quantity: <span class="quantity-label">${cartItem.quantity}</span>
-            </span>
-            <span class="update-quantity-link link-primary">
-            Update
-            </span>
-            <span class="delete-quantity-link link-primary js-delete-link" data-product-id="${matchingProduct.id}">
-            Delete
-            </span>
-        </div>
-        </div>
-
-        <div class="delivery-options">
-        <div class="delivery-options-title">
-            Choose a delivery option:
-        </div>
-         ${deliveryOptionsHTML(matchingProduct, cartItem)}
-        </div>
-        
-        </div>
-    </div>
-    </div>
-    `;
-// console.log(cartSummaryHTML);
-    
-});
-
-const mainCart = document.querySelector('.js-order-summary');
-mainCart.innerHTML = cartSummaryHTML;
-
-// generating html for the delivery options
-function deliveryOptionsHTML(matchingProduct, cartItem){
-    let html = " ";
-    deliveryOptions.forEach((deliveryOption) =>{
-        const today = dayjs();
-        const deliveryDate = today.add(deliveryOption.deliveryDays, 'days');
-        const dayString = deliveryDate.format('dddd, MMMM D');
-
-        const priceString = deliveryOption.priceCents === 0 ? "Free" : 
-        `$${formatCurrency(deliveryOption.priceCents)} -`;
-
-// for the check box
-const isChecked = deliveryOption.id === cartItem.deliveryOptionId;
-
-      html += `
-         <div class="delivery-option js-delivery-option" data-product-id="${matchingProduct.id}"
-         data-delivery-option-id="${deliveryOption.id}">
-            <input type="radio" ${isChecked ? 'checked': ''}
-            class="delivery-option-input"
-            name="delivery-option-${matchingProduct.id}">
-            <div>
-            <div class="delivery-option-date">
-               ${dayString}
-            </div>
-            <div class="delivery-option-price">
-                ${priceString} - Shipping 
-            </div>
-            </div>
-        </div>
-        `
-    });
-return html
 }
 
-
-
-
-
-// deleting from a cart by selecting all the delete buttons
-// we save a particular id to the delete button using data set
-const deleteButtons = document.querySelectorAll('.js-delete-link');
-deleteButtons.forEach((button) =>{
-    button.addEventListener("click",() =>{
-      const productId = button.dataset.productId;
-    //   console.log(productId);
-      removeFromCart(productId);  
-    //   console.log(cart);
-
-    
-    // to remove the html cart once a delete  button is pressed,
-    // 1) by giving a special class to the product container with its productId
-    // getting the element to be removed. eventListener has remove property
-    const container = document.querySelector(`.js-cart-item-container-${productId}`);
-    console.log((container));
-    container.remove();
-       
-    });
-});
-
-// updating delivery option, so that when checked, the delivery date is updated
-document.querySelectorAll('.js-delivery-option').forEach((element) =>{
-   element.addEventListener('click',()=>{
-    const {productId, deliveryOptionId} = element.dataset
-     updateDeliveryOption(productId, deliveryOptionId);
-
-   });
-});
-
-
-
-
+renderOrderSummary();
 
 
 
