@@ -11,7 +11,7 @@ cart.forEach((cartItem) =>{
     const productId = cartItem.productId;
     let matchingProduct;        
 
-    // loop through the products in products.js to get the produc that corresponds with
+    // loop through the products in products.js to get the product that corresponds with
     // our cartItem product, so that we can get the names, images, price etc
     products.forEach((product) =>{
         if(product.id === productId){
@@ -20,7 +20,7 @@ cart.forEach((cartItem) =>{
     });
     // console.log(matchingProduct);  //to see if all the details of a product is gotten
 
-cartSummaryHTML +=`<div class="cart-item-container">
+cartSummaryHTML +=`<div class="cart-item-container js-cart-item-container-${matchingProduct.id}">
     <div class="delivery-date">
         Delivery date: Tuesday, June 21
     </div>
@@ -111,7 +111,16 @@ deleteButtons.forEach((button) =>{
       const productId = button.dataset.productId;
     //   console.log(productId);
       removeFromCart(productId);  
-      console.log(cart);
-         
+    //   console.log(cart);
+
+    
+    // to remove the html cart once a delete  button is pressed,
+    // 1) by giving a special class to the product container with its productId
+    // getting the element to be removed. eventListener has remove property
+    const container = document.querySelector(`.js-cart-item-container-${productId}`);
+    console.log((container));
+    container.remove();
+       
     });
 });
+

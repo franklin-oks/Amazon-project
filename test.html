@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+
+
+ <script>
+    console.log(localStorage.getItem('message'));
+// JSON
+// json doesn't allow single quotes and functions inside of them unlike JS object
+// object syntax is only for javascript while JSON is universal to amost all languages
+// we use JSON to send data b/w two computers with different programming languages
+// we also use json to store data in localStorage
+// {
+//     "name": "obinna",
+//     "time": "one day",
+//     "rating":{
+//         "stars": 4.5,
+//         "count": 45
+//     }
+// }
+// json object convert javascript object into json object using a json method called
+// JSON.stringify()
+const products = {
+    name: 'obinna',
+    time: '12am',
+    rating: {
+        stars: 4.5,
+        count: 45
+    }
+}
+
+console.log(typeof JSON.stringify(products));  //the object is now ready to be stored in 
+// computer or sent to another computer.
+// to conver json object back to javascript we another another json object called
+// JSON.parse().  e.g
+const jsonToJavascript = JSON.stringify(products);
+console.log(JSON.parse(jsonToJavascript));
+
+// LocalStorage saves items parmanently and dosent clear even when the page is refreshed
+// to save item in localStorage we use localStorage.setItem('name', 'value');
+// two arguments, (name and value) and the value should be string
+localStorage.setItem('message','saved to storage');
+// localStorage.setItem('message', JSON.stringify(object)); //convert an object to json string
+// before saving
+//to get the item stored in localStorage using same name
+// if a value dosent exits in a local storage, it gives a null value,
+console.log(localStorage.getItem('message'));
+
+//to remove item from the localStorage
+console.log(localStorage.removeItem('cart'));
+console.log(localStorage.removeItem('message'));
+</script>
+</body>
+</html>
