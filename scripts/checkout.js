@@ -2,9 +2,25 @@ import {cart, removeFromCart} from "../data/cart.js";
 // we need to import the products here such that our productId can search and get other details like name etc
 import {products} from "../data/products.js";
 import {formatCurrency} from "./utils/money.js";
+import dayjs from 'https://unpkg.com/dayjs@1.11.10/esm/index.js';
+import {deliveryOptions} from '../data/deliveryoption.js'
 
 
 let cartSummaryHTML = " ";
+// using dayjs external library for date and time calculation
+// first load the dayjs script at the html or best import as module, then come here, call dayjs(); function
+// console.log(dayjs());, dayjs has add method that takes two arguments
+// 1) the number of time we want to add, e.g 7 days = 7, 2)length of time we want, for 7 days = "days"
+// or 7 'months' or 8 'years' etc.
+
+const today = dayjs();
+const deliveryDate7Days = today.add(7, 'days');
+// console.log(deliveryDate7Days);
+// will give you seven days from today, to format the date in a readable way
+console.log(deliveryDate7Days.format('dddd, MMMM D YYYY' ));  //check dayjs documentation for date formating
+
+
+
 
 cart.forEach((cartItem) =>{
 
@@ -20,9 +36,22 @@ cart.forEach((cartItem) =>{
     });
     // console.log(matchingProduct);  //to see if all the details of a product is gotten
 
+
+    const deliveryOptionId = cartItem.deliveryOptionId;
+    let deliveryOption;
+
+    deliveryOptions.forEach((option) =>{
+        if (option.id === deliveryOptionId){
+            deliveryOption = option;
+        }
+    });
+    const today = dayjs();
+    const deliveryDate = today.add(deliveryOption.deliveryDays, 'days');
+    const dayString = deliveryDate.format('dddd, MMMM D');
+
 cartSummaryHTML +=`<div class="cart-item-container js-cart-item-container-${matchingProduct.id}">
     <div class="delivery-date">
-        Delivery date: Tuesday, June 21
+        Delivery date: ${dayString}
     </div>
 
     <div class="cart-item-details-grid">
@@ -53,45 +82,9 @@ cartSummaryHTML +=`<div class="cart-item-container js-cart-item-container-${matc
         <div class="delivery-options-title">
             Choose a delivery option:
         </div>
-        <div class="delivery-option">
-            <input type="radio" checked
-            class="delivery-option-input"
-            name="delivery-option-${matchingProduct.id}">
-            <div>
-            <div class="delivery-option-date">
-                Tuesday, June 21
-            </div>
-            <div class="delivery-option-price">
-                FREE Shipping
-            </div>
-            </div>
+         ${deliveryOptionsHTML(matchingProduct, cartItem)}
         </div>
-        <div class="delivery-option">
-            <input type="radio"
-            class="delivery-option-input"
-            name="delivery-option-${matchingProduct.id}">
-            <div>
-            <div class="delivery-option-date">
-                Wednesday, June 15
-            </div>
-            <div class="delivery-option-price">
-                $4.99 - Shipping
-            </div>
-            </div>
-        </div>
-        <div class="delivery-option">
-            <input type="radio"
-            class="delivery-option-input"
-            name="delivery-option-${matchingProduct.id}">
-            <div>
-            <div class="delivery-option-date">
-                Monday, June 13
-            </div>
-            <div class="delivery-option-price">
-                $9.99 - Shipping
-            </div>
-            </div>
-        </div>
+        
         </div>
     </div>
     </div>
@@ -102,6 +95,46 @@ cartSummaryHTML +=`<div class="cart-item-container js-cart-item-container-${matc
 
 const mainCart = document.querySelector('.js-order-summary');
 mainCart.innerHTML = cartSummaryHTML;
+
+// generating html for the delivery options
+function deliveryOptionsHTML(matchingProduct, cartItem){
+    let html = " ";
+    deliveryOptions.forEach((deliveryOption) =>{
+        const today = dayjs();
+        const deliveryDate = today.add(deliveryOption.deliveryDays, 'days');
+        const dayString = deliveryDate.format('dddd, MMMM D');
+
+        const priceString = deliveryOption.priceCents === 0 ? "Free" : 
+        `$${formatCurrency(deliveryOption.priceCents)} -`;
+
+// for the check box
+const isChecked = deliveryOption.id === cartItem.deliveryOptionId;
+
+
+
+
+      html += `
+         <div class="delivery-option">
+            <input type="radio" ${isChecked ? 'checked': ''}
+            class="delivery-option-input"
+            name="delivery-option-${matchingProduct.id}">
+            <div>
+            <div class="delivery-option-date">
+               ${dayString}
+            </div>
+            <div class="delivery-option-price">
+                ${priceString} - Shipping 
+            </div>
+            </div>
+        </div>
+        `
+    });
+return html
+}
+
+
+
+
 
 // deleting from a cart by selecting all the delete buttons
 // we save a particular id to the delete button using data set
@@ -124,3 +157,7 @@ deleteButtons.forEach((button) =>{
     });
 });
 
+
+
+// NB: external library is best used with module to avoid naming conflict, we use
+// EcmaScript version Module

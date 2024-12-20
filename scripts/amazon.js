@@ -66,7 +66,7 @@ const productsContainer = document.querySelector('.js-products-grid');
 productsContainer.innerHTML = productsHTML;
 
 
-function updateCartQuantity(){
+export function updateCartQuantity(){
     // to make the cart icon count the total items
     let cartQuantity = 0;
     cart.forEach((cartItem) =>{
