@@ -7,17 +7,6 @@ import {deliveryOptions, getDeliveryOption} from '../../data/deliveryoption.js';
 import { renderPaymentSummary } from "./paymentSummary.js";
 
 
-// using dayjs external library for date and time calculation
-// first load the dayjs script at the html or best import as module, then come here, call dayjs(); function
-// console.log(dayjs());, dayjs has add method that takes two arguments
-// 1) the number of time we want to add, e.g 7 days = 7, 2)length of time we want, for 7 days = "days"
-// or 7 'months' or 8 'years' etc.
-
-const today = dayjs();
-const deliveryDate7Days = today.add(7, 'days');
-// console.log(deliveryDate7Days);
-// will give you seven days from today, to format the date in a readable way
-console.log(deliveryDate7Days.format('dddd, MMMM D YYYY' ));  //check dayjs documentation for date formating
 
 export function renderOrderSummary() {
 
