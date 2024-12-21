@@ -71,4 +71,4 @@ const payment = document.querySelector('.js-payment-summary');
 payment.innerHTML = paymentSummaryHTML;
 }
 
-renderPaymentSummary();
+// renderPaymentSummary();
