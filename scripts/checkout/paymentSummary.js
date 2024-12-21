@@ -67,8 +67,7 @@ const paymentSummaryHTML = `
             Place your order
           </button>
 `
-const payment = document.querySelector('.js-payment-summary');
-payment.innerHTML = paymentSummaryHTML;
+document.querySelector('.js-payment-summary')
+.innerHTML = paymentSummaryHTML;
 }
 
-// renderPaymentSummary();
