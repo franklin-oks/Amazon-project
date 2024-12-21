@@ -1,3 +1,17 @@
+ export function getProduct(productId) {
+  let matchingProduct;        
+
+  // loop through the products in products.js to get the product that corresponds with
+  // our cartItem product, so that we can get the names, images, price etc
+  products.forEach((product) =>{
+      if(product.id === productId){
+          matchingProduct = product;
+      }
+  });
+  return matchingProduct;
+}
+
+
 export const products = [
   {
     id: "e43638ce-6aa0-4b85-b27f-e1d07eb678c6",

@@ -1,9 +1,9 @@
 import {cart, removeFromCart, updateDeliveryOption} from "../../data/cart.js";
 // we need to import the products here such that our productId can search and get other details like name etc
-import {products} from "../../data/products.js";
+import {products, getProduct} from "../../data/products.js";
 import {formatCurrency} from "../utils/money.js";
 import dayjs from 'https://unpkg.com/dayjs@1.11.10/esm/index.js';
-import {deliveryOptions} from '../../data/deliveryoption.js'
+import {deliveryOptions, getDeliveryOption} from '../../data/deliveryoption.js'
 
 
 // using dayjs external library for date and time calculation
@@ -26,26 +26,17 @@ export function renderOrderSummary() {
         cart.forEach((cartItem) =>{
 
             const productId = cartItem.productId;
-            let matchingProduct;        
 
-            // loop through the products in products.js to get the product that corresponds with
-            // our cartItem product, so that we can get the names, images, price etc
-            products.forEach((product) =>{
-                if(product.id === productId){
-                    matchingProduct = product;
-                }
-            });
+            const matchingProduct = getProduct(productId);        
+
+           
             // console.log(matchingProduct);  //to see if all the details of a product is gotten
 
 
             const deliveryOptionId = cartItem.deliveryOptionId;
-            let deliveryOption;
+            const deliveryOption = getDeliveryOption(deliveryOptionId);
 
-            deliveryOptions.forEach((option) =>{
-                if (option.id === deliveryOptionId){
-                    deliveryOption = option;
-                }
-            });
+            
             const today = dayjs();
             const deliveryDate = today.add(deliveryOption.deliveryDays, 'days');
             const dayString = deliveryDate.format('dddd, MMMM D');
