@@ -1,5 +1,9 @@
 // to get item form the cart
-export let cart =  JSON.parse(localStorage.getItem('cart'));
+export let cart;
+
+loadFromStorage();
+export function loadFromStorage(){
+  cart =  JSON.parse(localStorage.getItem('cart'));
 
 if (!cart){
   
@@ -19,10 +23,10 @@ if (!cart){
   ];
 }
 
+}
 
 
 // to create a function to save the cart in the localStorage instead of in object above
-
 function saveToStorage(){
  localStorage.setItem('cart', JSON.stringify(cart));
 }
