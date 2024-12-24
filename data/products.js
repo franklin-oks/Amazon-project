@@ -54,7 +54,6 @@ const product1 = new Product( {
     "apparel"
   ]
 });
-console.log(product1);
 
 
 
@@ -722,4 +721,3 @@ export const products = [
  return new Product(productDetails);
 });
 
-console.log(products);
