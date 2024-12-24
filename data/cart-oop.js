@@ -3,6 +3,8 @@
 // NB: the other ones we have been using is called procedural programming (ie a step by step
 // set of instructions, ie grouping our code in different function),
 // OOP makes it easy to create multiple objects
+// OOP has a special future for generating object called classes
+// Classes are object generator
 
 
 const cart = {
